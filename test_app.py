@@ -1,32 +1,30 @@
-import pytest
-from app import slugify
+import unittest
+from app import kebab_to_str
 
-def test_basic_phrase():
-    assert slugify("Hello World") == "hello-world"
+class TestKebabToStr(unittest.TestCase):
+    def test_basic_kebab(self):
+        self.assertEqual(kebab_to_str('hello-world'), 'Hello World')
 
-def test_multiple_punctuation():
-    assert slugify("Hello, World! How are you?") == "hello-world-how-are-you"
+    def test_single_word(self):
+        self.assertEqual(kebab_to_str('python'), 'Python')
 
-def test_string_with_emojis():
-    assert slugify("Hello 😊 World 🚀!") == "hello-world"
+    def test_multiple_words(self):
+        self.assertEqual(kebab_to_str('this-is-a-test'), 'This Is A Test')
 
-def test_empty_string():
-    assert slugify("") == ""
+    def test_empty_string(self):
+        self.assertEqual(kebab_to_str(''), '')
 
-def test_only_punctuation():
-    assert slugify("!!!...,,,") == ""
+    def test_trailing_dash(self):
+        self.assertEqual(kebab_to_str('end-'), 'End ')
 
-def test_numbers_in_string():
-    assert slugify("Hello 123 World") == "hello-123-world"
+    def test_leading_dash(self):
+        self.assertEqual(kebab_to_str('-start'), ' Start')
 
-def test_non_ascii_characters():
-    assert slugify("Café Münsterländer") == "cafe-munsterlander"  # Adjust expectation if slugify preserves accents
+    def test_multiple_consecutive_dashes(self):
+        self.assertEqual(kebab_to_str('a--b'), 'A  B')
 
-def test_leading_trailing_spaces():
-    assert slugify("  Hello World  ") == "hello-world"
+    def test_all_uppercase(self):
+        self.assertEqual(kebab_to_str('HELLO-WORLD'), 'Hello World')
 
-def test_consecutive_spaces_and_punctuation():
-    assert slugify("Hello    World!!!") == "hello-world"
-
-def test_mixed_case():
-    assert slugify("HeLLo WoRLd") == "hello-world"
+if __name__ == '__main__':
+    unittest.main()
